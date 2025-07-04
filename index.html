@@ -45,36 +45,77 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script>
+    <script>
     const container = document.getElementById('imageContainer');
     const image = container.querySelector('img');
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    container.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left;
-      const offsetY = e.clientY - rect.top;
-      const x = (offsetX / rect.width - 0.5) * 2;  // -1 ~ 1
-      const y = (offsetY / rect.height - 0.5) * 2; // -1 ~ 1
+    if (!isMobile) {
+      // 데스크탑 마우스 인터랙션
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const offsetY = e.clientY - rect.top;
+        const x = (offsetX / rect.width - 0.5) * 2;
+        const y = (offsetY / rect.height - 0.5) * 2;
 
-      const rotateY = x * 20;
-      const rotateX = -y * 20;
+        const rotateY = x * 20;
+        const rotateX = -y * 20;
 
-      gsap.to(image, {
-        rotateY,
-        rotateX,
-        duration: 0.5,
-        ease: "power3.out",
+        gsap.to(image, {
+          rotateY,
+          rotateX,
+          duration: 0.5,
+          ease: "power3.out",
+        });
       });
-    });
 
-    container.addEventListener('mouseleave', () => {
-      gsap.to(image, {
-        rotateY: 0,
-        rotateX: 0,
-        duration: 0.8,
-        ease: "power3.out",
+      container.addEventListener('mouseleave', () => {
+        gsap.to(image, {
+          rotateY: 0,
+          rotateX: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        });
       });
-    });
+    } else {
+      // 모바일 터치 인터랙션
+      let startX = 0, startY = 0;
+
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return; // 한 손가락만
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+      });
+
+      container.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - startX;
+        const deltaY = touch.clientY - startY;
+
+        // 터치 이동 거리 기준으로 기울기 조정, 너무 많이 움직이면 제한
+        const rotateY = Math.max(-20, Math.min(20, deltaX * 0.2));
+        const rotateX = Math.max(-20, Math.min(20, -deltaY * 0.2));
+
+        gsap.to(image, {
+          rotateY,
+          rotateX,
+          duration: 0.3,
+          ease: "power3.out",
+        });
+      });
+
+      container.addEventListener('touchend', () => {
+        gsap.to(image, {
+          rotateY: 0,
+          rotateX: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        });
+      });
+    }
   </script>
 </body>
 
