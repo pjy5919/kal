@@ -9,7 +9,7 @@
     body {
       margin: 0;
       height: 100vh;
-      background: url(bg.jpg);
+      background: url(bg.jpg) center center / cover no-repeat;;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -51,7 +51,6 @@
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     if (!isMobile) {
-      // PC: 마우스 따라 이미지 기울이기
       container.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
         const offsetX = e.clientX - rect.left;
@@ -78,9 +77,6 @@
           ease: "power3.out",
         });
       });
-    } else {
-      // 모바일: 아무 인터랙션 없이 이미지 정면 고정 + 세로 비율로만 표시
-      image.style.transform = 'rotateX(0deg) rotateY(0deg)';
     }
   </script>
 </body>
