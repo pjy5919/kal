@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Responsive Mouse Follow Image</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: url(bg.jpg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .image-container {
+      perspective: 1000px;
+      width: 80%;
+      max-width: 1000px;
+      /* 큰 화면에서 최대 크기 제한 */
+      /* aspect-ratio: 4 / 3; */
+      /* 반응형으로 비율 유지 */
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform-style: preserve-3d;
+      will-change: transform;
+      pointer-events: none;
+      display: block;
+      /* 이미지 아래 여백 방지 */
+      box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="image-container" id="imageContainer">
+    <img src="kal.png" alt="Follow Image" />
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script>
+    const container = document.getElementById('imageContainer');
+    const image = container.querySelector('img');
+
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const offsetX = e.clientX - rect.left;
+      const offsetY = e.clientY - rect.top;
+      const x = (offsetX / rect.width - 0.5) * 2;  // -1 ~ 1
+      const y = (offsetY / rect.height - 0.5) * 2; // -1 ~ 1
+
+      const rotateY = x * 20;
+      const rotateX = -y * 20;
+
+      gsap.to(image, {
+        rotateY,
+        rotateX,
+        duration: 0.5,
+        ease: "power3.out",
+      });
+    });
+
+    container.addEventListener('mouseleave', () => {
+      gsap.to(image, {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 0.8,
+        ease: "power3.out",
+      });
+    });
+  </script>
+</body>
+
+</html>
